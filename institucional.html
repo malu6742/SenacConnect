@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel institucional do protótipo Senac Connect.">
+  <title>Painel institucional · Senac Connect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topbar">
+    <a class="topbar__brand" href="#visao">
+      <img class="topbar__logo" src="img/logo-senac-cor.png" alt="Senac" width="67" height="40">
+      <span class="topbar__product">Connect</span>
+    </a>
+    <button id="menuToggle" class="icon-button topbar__menu" type="button" aria-controls="sidebar" aria-label="Mostrar ou ocultar o menu">
+      <span data-icon="menu"></span>
+    </button>
+    <span class="topbar__context">Painel institucional</span>
+    <div class="topbar__user">
+      <span id="userAvatar" class="avatar" aria-hidden="true"></span>
+      <span class="topbar__user-text">
+        <strong id="userName"></strong>
+        <small>Perfil institucional</small>
+      </span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar" aria-label="Menu principal">
+      <nav>
+        <ul class="sidebar__list">
+          <li><a href="#visao" data-nav="visao"><span data-icon="layout"></span>Visão geral</a></li>
+          <li><a href="#movimentacoes" data-nav="movimentacoes"><span data-icon="history"></span>Movimentações</a></li>
+          <li>
+            <a href="#solicitacoes" data-nav="solicitacoes">
+              <span data-icon="clipboard"></span>Solicitações de saída
+              <span id="navPending" class="nav-count" hidden></span>
+            </a>
+          </li>
+          <li>
+            <a href="#ocorrencias" data-nav="ocorrencias">
+              <span data-icon="alert"></span>Ocorrências
+              <span id="navAlerts" class="nav-count nav-count--danger" hidden></span>
+            </a>
+          </li>
+          <li><a href="#catraca" data-nav="catraca"><span data-icon="fingerprint"></span>Catraca (simulação)</a></li>
+        </ul>
+        <ul class="sidebar__list sidebar__list--secondary">
+          <li><button id="resetDemo" type="button"><span data-icon="refresh"></span>Restaurar dados fictícios</button></li>
+          <li><button type="button" data-logout><span data-icon="saida"></span>Sair</button></li>
+        </ul>
+      </nav>
+    </aside>
+    <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <main id="conteudo" class="content">
+      <p class="demo-banner">
+        <span data-icon="info"></span>
+        <span>
+          <strong>Ambiente de demonstração.</strong>
+          Dados fictícios, login simulado e catraca simulada. Nada é enviado a servidores.
+        </span>
+      </p>
+
+      <div id="globalAlert"></div>
+
+      <!-- Visão geral -->
+      <section data-view="visao" aria-labelledby="visaoTitle">
+        <div class="page-head">
+          <div>
+            <h1 id="visaoTitle" tabindex="-1">Visão geral</h1>
+            <p id="overviewSubtitle">Resumo das movimentações do dia.</p>
+          </div>
+          <div class="field field--inline">
+            <label for="overviewDate">Data</label>
+            <input id="overviewDate" type="date">
+          </div>
+        </div>
+
+        <div id="kpis" class="kpi-grid"></div>
+
+        <div class="grid-2">
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="clipboard"></span>Solicitações pendentes</h2>
+              <a class="box__link" href="#solicitacoes">Ver todas</a>
+            </header>
+            <div id="pendingList" class="box__body"></div>
+          </article>
+
+          <article class="box box--danger">
+            <header class="box__header">
+              <h2><span data-icon="alert"></span>Saídas sem liberação a verificar</h2>
+              <a class="box__link" href="#ocorrencias">Ver todas</a>
+            </header>
+            <div id="alertList" class="box__body"></div>
+          </article>
+        </div>
+
+        <div class="grid-2">
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="entrada"></span>Chegadas</h2>
+              <button class="box__link" type="button" data-goto-history="entrada">Ver no histórico</button>
+            </header>
+            <div id="arrivalsList" class="box__body"></div>
+          </article>
+
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="saida"></span>Saídas</h2>
+              <button class="box__link" type="button" data-goto-history="saida">Ver no histórico</button>
+            </header>
+            <div id="exitsList" class="box__body"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Movimentações -->
+      <section data-view="movimentacoes" aria-labelledby="movTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="movTitle" tabindex="-1">Movimentações</h1>
+            <p>Histórico de entradas e saídas registradas pela catraca simulada.</p>
+          </div>
+        </div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="history"></span>Histórico de movimentações</h2>
+          </header>
+          <form id="historyFilters" class="filters" aria-label="Filtros do histórico">
+            <div class="field">
+              <label for="filterAluno">Aluno</label>
+              <select id="filterAluno"></select>
+            </div>
+            <div class="field">
+              <label for="filterTurma">Turma</label>
+              <select id="filterTurma"></select>
+            </div>
+            <div class="field">
+              <label for="filterData">Data</label>
+              <input id="filterData" type="date">
+            </div>
+            <div class="field">
+              <label for="filterSituacao">Situação</label>
+              <select id="filterSituacao">
+                <option value="">Todas</option>
+                <option value="entrada">Entradas</option>
+                <option value="saida">Todas as saídas</option>
+                <option value="regular">Saídas regulares</option>
+                <option value="autorizada">Saídas autorizadas</option>
+                <option value="sem_liberacao">Saídas sem liberação</option>
+              </select>
+            </div>
+            <button class="ghost-button" type="reset">Limpar filtros</button>
+          </form>
+          <div id="historyTable"></div>
+        </article>
+      </section>
+
+      <!-- Solicitações -->
+      <section data-view="solicitacoes" aria-labelledby="reqTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="reqTitle" tabindex="-1">Solicitações de saída</h1>
+            <p>Pedidos de liberação enviados pelos responsáveis. Aprove ou recuse os pendentes.</p>
+          </div>
+        </div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="clipboard"></span>Autorizações de saída antecipada</h2>
+          </header>
+          <form id="requestFilters" class="filters" aria-label="Filtros das solicitações">
+            <div class="field">
+              <label for="requestStatus">Situação</label>
+              <select id="requestStatus">
+                <option value="">Todas</option>
+                <option value="pendente">Pendentes</option>
+                <option value="aprovada">Aprovadas</option>
+                <option value="recusada">Recusadas</option>
+                <option value="cancelada">Canceladas</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="requestTurma">Turma</label>
+              <select id="requestTurma"></select>
+            </div>
+            <div class="field">
+              <label for="requestData">Data da saída</label>
+              <input id="requestData" type="date">
+            </div>
+            <button class="ghost-button" type="reset">Limpar filtros</button>
+          </form>
+          <div id="requestsTable"></div>
+        </article>
+      </section>
+
+      <!-- Ocorrências -->
+      <section data-view="ocorrencias" aria-labelledby="occTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="occTitle" tabindex="-1">Ocorrências</h1>
+            <p>Saídas registradas sem liberação aprovada. O responsável é notificado automaticamente.</p>
+          </div>
+        </div>
+
+        <article class="box box--danger">
+          <header class="box__header">
+            <h2><span data-icon="alert"></span>Saídas sem liberação</h2>
+          </header>
+          <div id="alertsTable"></div>
+        </article>
+      </section>
+
+      <!-- Catraca -->
+      <section data-view="catraca" aria-labelledby="catracaTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="catracaTitle" tabindex="-1">Catraca biométrica <span class="tag">Simulação</span></h1>
+            <p>
+              Demonstração do fluxo de identificação. Não há conexão com equipamentos e nenhum
+              dado biométrico (imagem ou digital) é capturado ou armazenado.
+            </p>
+          </div>
+        </div>
+
+        <div class="catraca">
+          <div id="catracaDevice" class="catraca-device" data-state="idle">
+            <div class="catraca-device__screen" role="status" aria-live="polite">
+              <span class="catraca-device__sensor" data-icon="fingerprint"></span>
+              <strong id="catracaScreenTitle">Aguardando identificação</strong>
+              <span id="catracaScreenText">Selecione um aluno e simule a leitura.</span>
+            </div>
+            <div class="catraca-device__lights" aria-hidden="true">
+              <span class="light light--ok"></span>
+              <span class="light light--alert"></span>
+            </div>
+            <small>Terminal 01 · Portaria principal (fictício)</small>
+          </div>
+
+          <form id="catracaForm" class="box catraca-form" novalidate>
+            <header class="box__header">
+              <h2><span data-icon="fingerprint"></span>Registrar evento</h2>
+            </header>
+            <div class="box__body">
+              <ol class="steps" aria-label="Etapas">
+                <li data-step="1" class="is-active">Selecionar aluno</li>
+                <li data-step="2">Identificar</li>
+                <li data-step="3">Registrar evento</li>
+              </ol>
+
+              <div class="field">
+                <label for="catracaAluno">1. Aluno</label>
+                <select id="catracaAluno" aria-describedby="catracaAlunoError">
+                  <option value="">Selecione um aluno fictício</option>
+                </select>
+                <p id="catracaAlunoError" class="field__error"></p>
+              </div>
+
+              <button id="catracaIdentify" class="secondary-button" type="button">
+                <span data-icon="fingerprint"></span>2. Simular identificação
+              </button>
+
+              <fieldset id="catracaEvent" class="catraca-event" disabled>
+                <legend>3. Tipo de evento</legend>
+                <div class="segmented">
+                  <label><input type="radio" name="catracaTipo" value="entrada"><span><span data-icon="entrada"></span>Entrada</span></label>
+                  <label><input type="radio" name="catracaTipo" value="saida"><span><span data-icon="saida"></span>Saída</span></label>
+                </div>
+                <p id="catracaSuggestion" class="hint"></p>
+
+                <div class="field-row">
+                  <div class="field">
+                    <label for="catracaData">Data do evento</label>
+                    <input id="catracaData" type="date" required>
+                  </div>
+                  <div class="field">
+                    <label for="catracaHora">Horário</label>
+                    <input id="catracaHora" type="time" required>
+                  </div>
+                </div>
+                <button id="catracaNow" class="link-button" type="button">Usar data e horário atuais</button>
+                <p class="hint">Altere a data e o horário para simular situações diferentes, como uma saída antes do fim do turno.</p>
+
+                <p id="catracaError" class="form-error" role="alert"></p>
+                <button class="primary-button" type="submit"><span data-icon="check"></span>Registrar na catraca</button>
+              </fieldset>
+            </div>
+          </form>
+        </div>
+
+        <div id="catracaResult" class="catraca-result" hidden></div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="history"></span>Últimos eventos da catraca</h2>
+          </header>
+          <ul id="catracaLog" class="event-list box__body"></ul>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <footer class="app-footer">© 2026 Senac Connect · Protótipo demonstrativo com dados fictícios</footer>
+
+  <dialog id="detailsDialog" class="dialog" aria-labelledby="detailsTitle">
+    <div class="dialog__header">
+      <h2 id="detailsTitle">Detalhes da solicitação</h2>
+      <button class="icon-button" type="button" data-close-dialog aria-label="Fechar"><span data-icon="close"></span></button>
+    </div>
+    <div id="detailsBody" class="dialog__body"></div>
+    <div id="detailsActions" class="dialog__actions"></div>
+  </dialog>
+
+  <dialog id="refuseDialog" class="dialog" aria-labelledby="refuseTitle">
+    <form id="refuseForm" novalidate>
+      <div class="dialog__header">
+        <h2 id="refuseTitle">Recusar solicitação</h2>
+        <button class="icon-button" type="button" data-close-dialog aria-label="Fechar"><span data-icon="close"></span></button>
+      </div>
+      <div class="dialog__body">
+        <p id="refuseSummary"></p>
+        <div class="field">
+          <label for="refuseReason">Justificativa para o responsável</label>
+          <textarea id="refuseReason" rows="3" maxlength="200" aria-describedby="refuseReasonError refuseReasonHint"></textarea>
+          <p id="refuseReasonHint" class="hint">Entre 5 e 200 caracteres. O texto aparece no painel do responsável.</p>
+          <p id="refuseReasonError" class="field__error"></p>
+        </div>
+      </div>
+      <div class="dialog__actions">
+        <button class="ghost-button" type="button" data-close-dialog>Cancelar</button>
+        <button class="danger-button" type="submit"><span data-icon="thumbsDown"></span>Recusar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="script.js"></script>
+  <script src="catraca.js"></script>
+  <script src="institucional.js"></script>
+</body>
+</html>

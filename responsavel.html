@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Painel do responsável do protótipo Senac Connect.">
+  <title>Painel do responsável · Senac Connect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="app">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topbar">
+    <a class="topbar__brand" href="#visao">
+      <img class="topbar__logo" src="img/logo-senac-cor.png" alt="Senac" width="67" height="40">
+      <span class="topbar__product">Connect</span>
+    </a>
+    <button id="menuToggle" class="icon-button topbar__menu" type="button" aria-controls="sidebar" aria-label="Mostrar ou ocultar o menu">
+      <span data-icon="menu"></span>
+    </button>
+    <span class="topbar__context">Painel do responsável</span>
+    <div class="topbar__user">
+      <span id="userAvatar" class="avatar" aria-hidden="true"></span>
+      <span class="topbar__user-text">
+        <strong id="userName"></strong>
+        <small>Responsável</small>
+      </span>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside id="sidebar" class="sidebar" aria-label="Menu principal">
+      <nav>
+        <ul class="sidebar__list">
+          <li><a href="#visao" data-nav="visao"><span data-icon="layout"></span>Visão geral</a></li>
+          <li><a href="#liberacao" data-nav="liberacao"><span data-icon="form"></span>Solicitar liberação</a></li>
+          <li><a href="#historico" data-nav="historico"><span data-icon="history"></span>Histórico</a></li>
+          <li>
+            <a href="#notificacoes" data-nav="notificacoes">
+              <span data-icon="bell"></span>Notificações
+              <span id="navUnread" class="nav-count" hidden></span>
+            </a>
+          </li>
+        </ul>
+        <ul class="sidebar__list sidebar__list--secondary">
+          <li><button id="resetDemo" type="button"><span data-icon="refresh"></span>Restaurar dados fictícios</button></li>
+          <li><button type="button" data-logout><span data-icon="saida"></span>Sair</button></li>
+        </ul>
+      </nav>
+    </aside>
+    <div id="sidebarBackdrop" class="sidebar-backdrop" aria-hidden="true"></div>
+
+    <main id="conteudo" class="content">
+      <p class="demo-banner">
+        <span data-icon="info"></span>
+        <span>
+          <strong>Ambiente de demonstração.</strong>
+          Dados fictícios e login simulado. As notificações são exemplos gerados pela catraca simulada.
+        </span>
+      </p>
+
+      <div class="student-bar" role="group" aria-labelledby="studentBarLabel">
+        <span id="studentBarLabel" class="student-bar__label">Aluno acompanhado</span>
+        <div id="studentSwitcher" class="student-switcher"></div>
+      </div>
+
+      <!-- Visão geral -->
+      <section data-view="visao" aria-labelledby="visaoTitle">
+        <div class="page-head">
+          <div>
+            <h1 id="visaoTitle" tabindex="-1">Visão geral</h1>
+            <p id="studentSubtitle"></p>
+          </div>
+        </div>
+
+        <div id="statusCards" class="status-grid"></div>
+
+        <div class="grid-2">
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="bell"></span>Notificações recentes</h2>
+              <a class="box__link" href="#notificacoes">Ver todas</a>
+            </header>
+            <div id="recentNotifications" class="box__body"></div>
+          </article>
+
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="clipboard"></span>Solicitações de liberação</h2>
+              <a class="box__link" href="#liberacao">Nova solicitação</a>
+            </header>
+            <div id="recentRequests" class="box__body"></div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Solicitar liberação -->
+      <section data-view="liberacao" aria-labelledby="liberacaoTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="liberacaoTitle" tabindex="-1">Solicitar liberação de saída</h1>
+            <p>Peça a saída antecipada e acompanhe a análise da escola. Todo pedido começa como “Pendente”.</p>
+          </div>
+        </div>
+
+        <div class="request-layout">
+          <article class="box">
+            <header class="box__header">
+              <h2><span data-icon="form"></span>Novo pedido</h2>
+            </header>
+            <form id="requestForm" class="box__body form-stack" novalidate>
+              <div class="field">
+                <label for="reqAluno">Aluno</label>
+                <select id="reqAluno" aria-describedby="reqAlunoError" required></select>
+                <p id="reqAlunoError" class="field__error"></p>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="reqData">Data da saída</label>
+                  <input id="reqData" type="date" aria-describedby="reqDataError" required>
+                  <p id="reqDataError" class="field__error"></p>
+                </div>
+                <div class="field">
+                  <label for="reqHora">Horário previsto</label>
+                  <input id="reqHora" type="time" aria-describedby="reqHoraHint reqHoraError" required>
+                  <p id="reqHoraHint" class="hint"></p>
+                  <p id="reqHoraError" class="field__error"></p>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="reqMotivo">Motivo da solicitação</label>
+                <textarea id="reqMotivo" rows="4" maxlength="300" aria-describedby="reqMotivoHint reqMotivoError" required></textarea>
+                <p id="reqMotivoHint" class="hint">
+                  Entre 10 e 300 caracteres. <span id="reqMotivoCount">0/300</span>
+                </p>
+                <p id="reqMotivoError" class="field__error"></p>
+              </div>
+
+              <p id="reqFormError" class="form-error" role="alert"></p>
+
+              <button class="primary-button" type="submit"><span data-icon="send"></span>Enviar solicitação</button>
+            </form>
+          </article>
+
+          <aside class="box box--soft" aria-labelledby="rulesTitle">
+            <header class="box__header">
+              <h2 id="rulesTitle"><span data-icon="info"></span>Como funciona</h2>
+            </header>
+            <ol class="box__body rules-list">
+              <li>O pedido chega ao painel da escola com o status <strong>Pendente</strong>.</li>
+              <li>A coordenação aprova ou recusa. O status muda aqui e você recebe uma notificação.</li>
+              <li>Com a liberação aprovada, a saída na catraca é registrada como <strong>Saída autorizada</strong> a partir de 30 minutos antes do horário pedido.</li>
+              <li>Saídas antes do fim do turno sem liberação geram uma ocorrência.</li>
+            </ol>
+          </aside>
+        </div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="clipboard"></span>Acompanhar solicitações</h2>
+          </header>
+          <div id="requestsTable"></div>
+        </article>
+      </section>
+
+      <!-- Histórico -->
+      <section data-view="historico" aria-labelledby="historicoTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="historicoTitle" tabindex="-1">Histórico de entradas e saídas</h1>
+            <p>Movimentações do aluno selecionado registradas pela catraca simulada.</p>
+          </div>
+        </div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="history"></span>Movimentações</h2>
+          </header>
+          <form id="historyFilters" class="filters" aria-label="Filtros do histórico">
+            <div class="field">
+              <label for="histTipo">Evento</label>
+              <select id="histTipo">
+                <option value="">Entradas e saídas</option>
+                <option value="entrada">Somente entradas</option>
+                <option value="saida">Somente saídas</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="histPeriodo">Período</label>
+              <select id="histPeriodo">
+                <option value="7">Últimos 7 dias</option>
+                <option value="30">Últimos 30 dias</option>
+                <option value="">Todo o período</option>
+              </select>
+            </div>
+            <button class="ghost-button" type="reset">Limpar filtros</button>
+          </form>
+          <div id="historyTable"></div>
+        </article>
+      </section>
+
+      <!-- Notificações -->
+      <section data-view="notificacoes" aria-labelledby="notifTitle" hidden>
+        <div class="page-head">
+          <div>
+            <h1 id="notifTitle" tabindex="-1">Notificações</h1>
+            <p>Avisos demonstrativos sobre chegadas, saídas, ocorrências e solicitações.</p>
+          </div>
+          <button id="markAllRead" class="ghost-button" type="button"><span data-icon="check"></span>Marcar todas como lidas</button>
+        </div>
+
+        <article class="box">
+          <header class="box__header">
+            <h2><span data-icon="bell"></span>Caixa de notificações</h2>
+          </header>
+          <div id="allNotifications" class="box__body"></div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <footer class="app-footer">© 2026 Senac Connect · Protótipo demonstrativo com dados fictícios</footer>
+
+  <script src="script.js"></script>
+  <script src="responsavel.js"></script>
+</body>
+</html>
